@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Profile Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+
+  <div class="login-container">
+    <div class="login-card">
+      <h1>🎓 Profile Dashboard</h1>
+      <p class="login-subtitle">Sign in with your credentials</p>
+
+      <form onsubmit="handleLogin(event)">
+        <input 
+          id="username" 
+          type="text"
+          placeholder="Username or Email"
+          required
+          autocomplete="username"
+        >
+        <input 
+          id="password" 
+          type="password" 
+          placeholder="Password"
+          required
+          autocomplete="current-password"
+        >
+        <button type="submit">🔐 Login</button>
+      </form>
+
+      <p id="error" class="error"></p>
+      <p class="login-hint">📧 Use your school username or email address</p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      login();
+    }
+  </script>
+</body>
+</html>

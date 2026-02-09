@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+
+  <h1>📋 My Profile</h1>
+
+  <!-- Section 1: Basic User Info -->
+  <div id="user-info" class="info-section"></div>
+
+  <!-- Section 2: XP Information -->
+  <div id="xp-info" class="info-section"></div>
+
+  <!-- Section 3: Results / Pass-Fail -->
+  <div id="result-info" class="info-section"></div>
+
+  <!-- Section 4: Audit Ratio -->
+  <div id="audit-info" class="info-section"></div>
+
+  <!-- Section 5: Statistics Graphs -->
+  <h2>📊 Statistics & Graphs</h2>
+  <div id="graphs" class="graphs-container"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/graphql.js"></script>
+  <script src="js/graphs.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>
