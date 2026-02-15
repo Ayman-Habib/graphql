@@ -197,7 +197,6 @@ class ProfileApp {
             'audits-received': '0',
             'audit-ratio': '0',
             'completed-projects': '0',
-            'current-grade': '0%',
             'total-transactions': '0'
         };
         
@@ -313,11 +312,9 @@ class ProfileApp {
         this.isLoading = true;
 
         try {
-            // Load all data in parallel
             await Promise.all([
                 this.loadUserInfo(),
                 this.loadUserLevel(),
-                this.loadAverageGrade(),
                 this.loadXPStats(),
                 this.loadAuditStats(),
                 this.loadProjectsStats(),
@@ -429,38 +426,7 @@ class ProfileApp {
         }
     }
 
-    async loadAverageGrade() {
-        try {
-            console.log('Loading average grade...');
-            const gradeData = await graphql.getAverageGrade();
-            
-            if (gradeData?.progress_aggregate?.aggregate?.avg?.grade) {
-                const averageGrade = gradeData.progress_aggregate.aggregate.avg.grade;
-                const percentage = (averageGrade * 100).toFixed(1);
-                
-                
-                const gradeElement = document.getElementById('current-grade');
-                if (gradeElement) {
-                    gradeElement.textContent = `${percentage}%`;
-                }
-                console.log('Average grade loaded:', percentage + '%');
-            } else {
-                console.log('No grade data found');
-                const gradeElement = document.getElementById('current-grade');
-                if (gradeElement) {
-                    gradeElement.textContent = 'N/A';
-                }
-            }
-        } catch (error) {
-            console.error('Error loading average grade:', error);
-            const gradeElement = document.getElementById('current-grade');
-            if (gradeElement) {
-                gradeElement.textContent = 'Error';
-            }
-        }
-    }
-
-   async loadXPStats() {
+    async loadXPStats() {
     try {
         console.log('Loading XP stats...');
 
