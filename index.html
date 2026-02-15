@@ -1,47 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Profile Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reboot01 Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
-<body class="login-page">
-
-  <div class="login-container">
-    <div class="login-card">
-      <h1> Profile Dashboard</h1>
-      <p class="login-subtitle">Sign in with your credentials</p>
-
-      <form onsubmit="handleLogin(event)">
-        <input 
-          id="username" 
-          type="text"
-          placeholder="Username or Email"
-          required
-          autocomplete="username"
-        >
-        <input 
-          id="password" 
-          type="password" 
-          placeholder="Password"
-          required
-          autocomplete="current-password"
-        >
-        <button type="submit"> Login</button>
-      </form>
-
-      <p id="error" class="error"></p>
-      <p class="login-hint"> Use your school username or email address</p>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="page">
+        <div class="login-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Reboot01</h1>
+            </div>
+            <form id="login-form">
+                <h2>Sign In</h2>
+<div class="input-group">
+    <label for="username">Username or Email</label>
+    <input type="text" id="username" required autocomplete="username">
+</div>
+<div class="input-group">
+    <label for="password">Password</label>
+    <input type="password" id="password" required autocomplete="current-password">
+</div>
+                <div id="error-message" class="error"></div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+                <div class="login-info">
+                    <p>Use your Reboot01 credentials</p>
+                    <p>Both username:password and email:password work</p>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 
-  <script src="js/auth.js"></script>
-  <script>
-    function handleLogin(event) {
-      event.preventDefault();
-      login();
-    }
-  </script>
+    <!-- Profile Page -->
+    <div id="profile-page" class="page hidden">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-user-circle"></i> My Profile</h1>
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- User Info Section -->
+            <section class="card" id="user-info">
+                <h2><i class="fas fa-id-card"></i> User Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">ID:</span>
+                        <span id="user-id" class="value">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Login:</span>
+                        <span id="user-login" class="value">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Email:</span>
+                        <span id="user-email" class="value">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Level:</span>
+                        <span id="user-level" class="value">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- XP Information Section -->
+            <section class="card" id="xp-info">
+                <h2><i class="fas fa-star"></i> XP Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Total XP:</span>
+                        <span id="total-xp" class="value">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">XP Today:</span>
+                        <span id="xp-today" class="value">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">XP This Week:</span>
+                        <span id="xp-week" class="value">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section class="card" id="skills-info">
+                <h2><i class="fas fa-cogs"></i> Skills</h2>
+                <div id="skills-chart-container">
+                    <svg id="skills-radar"></svg>
+                </div>
+                <div id="skills-list"></div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="card" id="statistics">
+                <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
+                
+                <!-- Chart Controls -->
+                <div class="chart-controls">
+                    <button id="btn-xp-chart" class="btn-chart active">
+                        <i class="fas fa-chart-line"></i> XP Over Time
+                    </button>
+                    <button id="btn-audit-chart" class="btn-chart">
+                        <i class="fas fa-chart-pie"></i> Audit Ratio
+                    </button>
+                    <button id="btn-projects-chart" class="btn-chart">
+                        <i class="fas fa-project-diagram"></i> Projects
+                    </button>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <!-- XP Over Time Chart -->
+                    <div id="xp-chart" class="chart">
+                        <h3>XP Earned Over Time</h3>
+                        <svg id="xp-svg" width="800" height="400"></svg>
+                    </div>
+
+                    <!-- Audit Ratio Chart -->
+                    <div id="audit-chart" class="chart hidden">
+                        <h3>Audit Ratio</h3>
+                        <div style="display: flex; gap: 2rem; align-items: flex-start;">
+                            <svg id="audit-svg" width="400" height="400"></svg>
+                            <div id="audits-done" class="audit-info" style="flex: 1; padding: 1rem; background: #f8f9fa; border-radius: 8px; min-width: 200px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Chart -->
+<div id="projects-chart" class="chart hidden">
+    <h3>Projects Status</h3>
+    <svg id="projects-svg" width="1000" height="550"></svg>
+</div>
+                </div>
+            </section>
+
+            <!-- Additional Info Section -->
+            <section class="card" id="additional-info">
+                <h2><i class="fas fa-info-circle"></i> Additional Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">Completed Projects:</span>
+                        <span id="completed-projects" class="value">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Current Grade:</span>
+                        <span id="current-grade" class="value">0%</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Total Transactions:</span>
+                        <span id="total-transactions" class="value">0</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Data provided by Reboot01 GraphQL API | Profile Page Project</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Loading data...</p>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="graphql.js"></script>
+    <script src="charts.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

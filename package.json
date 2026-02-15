@@ -1,0 +1,28 @@
+{
+  "name": "graphql-profile",
+  "version": "1.0.0",
+  "description": "Reboot01 GraphQL Profile - Display your school data with interactive visualizations",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server",
+    "serve": "python -m http.server 8000",
+    "serve:py3": "python -m http.server 8000",
+    "serve:py2": "python -m SimpleHTTPServer 8000"
+  },
+  "keywords": [
+    "graphql",
+    "reboot01",
+    "profile",
+    "authentication",
+    "data-visualization"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/graphql-profile.git"
+  }
+}

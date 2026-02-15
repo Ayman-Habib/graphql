@@ -1,459 +1,290 @@
-# 📋 GraphQL Profile Dashboard
+# Reboot01 GraphQL Profile
 
-A comprehensive profile dashboard built with GraphQL, JWT authentication, and interactive SVG-based statistics graphs.
+A personal profile page built with GraphQL that displays your Reboot01 school data including XP, audits, projects, and skills.
 
-## 🎯 Project Overview
+## Features
 
-This project demonstrates:
-- **GraphQL API Integration** - Query user data with advanced GraphQL features
-- **JWT Authentication** - Secure login with token-based access control
-- **Interactive Graphs** - Beautiful SVG-based data visualizations (4+ different graph types)
-- **Responsive Design** - Mobile-friendly UI with modern styling
-- **User Dashboard** - Personalized profile with key statistics
-- **Error Handling** - Comprehensive error management and user feedback
+ **Authentication**
+- JWT-based login with Basic authentication
+- Support for both username and email login
+- Secure token storage and refresh
 
-## ✨ Features
+ **Profile Dashboard**
+- User identification and level
+- Total XP and weekly/daily XP tracking
+- Audit ratio and statistics
+- Project status tracking
+- Skills display
 
-### 🔐 Authentication
-- **Login Page** - Supports both username and email login
-- **JWT Token Management** - Secure token storage in localStorage
-- **Logout Functionality** - Safe session termination
-- **Error Handling** - Informative error messages for invalid credentials
-- **API Endpoint**: `https://learn.reboot01.com/api/auth/signin`
+ **Interactive Visualizations**
+- XP progression over time (line chart)
+- Audit ratio distribution (pie chart)
+- Project status breakdown (donut chart with details)
+- Responsive SVG graphs using D3.js
 
-### 📊 Profile Sections
+## Project Structure
 
-#### 1. Basic User Information
-- User ID
-- Login/Username
-- **Query Type**: Simple Query
+```
+├── index.html          # Main HTML page
+├── auth.js             # Authentication service
+├── graphql.js          # GraphQL queries
+├── script.js           # Main application logic
+├── charts.js           # Chart generation
+├── style.css           # Styling
+├── login.js            # (Currently unused)
+├── database-struct.txt # Database schema reference
+└── instructions.txt    # Project requirements
+```
+
+## Required Queries (All Implemented)
+
+ **Simple Query** - Get user info
 ```graphql
-{
+query {
   user {
     id
     login
+    attrs
   }
 }
 ```
 
-#### 2. Total XP Earned
-- Total XP accumulation
-- XP transaction history
-- Recent XP Progress Graph
-- **Query Type**: Query with WHERE clause (Arguments)
+ **Query with Arguments** - Get XP transactions by user ID
 ```graphql
-{
-  transaction(where: { type: { _eq: "xp" }}) {
+query GetXPTransactions($userId: Int!) {
+  transaction(where: { userId: { _eq: $userId }, type: { _eq: "xp" } }) {
+    id
+    type
     amount
     createdAt
-    path
-    objectId
   }
 }
 ```
 
-#### 3. Results Summary
-- Pass/Fail statistics
-- Success rate percentage
-- Interactive Pass/Fail Ratio Graph
-- **Query Type**: Nested Query (with sorting and limits)
+ **Nested Query** - Get progress with user information
 ```graphql
-{
-  result(order_by: {createdAt: desc}, limit: 200) {
+query GetProgressWithUser($userId: Int!) {
+  progress(where: { userId: { _eq: $userId } }) {
     id
     grade
-    path
     createdAt
-    object {
-      name
-      type
-    }
+    object { name type }
+    user { id login }
   }
 }
 ```
 
-#### 4. Audit Ratio
-- Audit completion ratio
-- Audits done vs received
-- Audit Ratio Donut Graph
-- **Query Type**: Nested Query with custom fields
-```graphql
-{
-  user {
-    login
-    auditRatio
-    totalUp
-    totalDown
-  }
-}
-```
+## Deployment Options
 
-#### 5. Skills (Optional)
-- User learned skills
-- **Query Type**: Query with Arguments
+### 1. GitHub Pages (Recommended)
 
-### 📈 Statistics & Graphs
+**Steps:**
+1. Create a repository on GitHub
+2. Clone it locally
+3. Copy all project files to the repository
+4. Push to GitHub:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit: GraphQL Profile"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/graphql-profile.git
+   git push -u origin main
+   ```
+5. Go to **Settings** → **Pages**
+6. Select **Main** branch as source
+7. Your site will be available at `https://YOUR_USERNAME.github.io/graphql-profile/`
 
-#### Graph 1: Recent XP Progress (Bar Chart)
-- Visual representation of recent XP transactions
-- Shows last 12 XP gains
-- Interactive tooltips with date and amount
-- Color: Blue (#2196F3)
+### 2. Netlify
 
-#### Graph 2: Pass/Fail Ratio (Donut Chart)
-- Percentage of passed vs failed evaluations
-- Color-coded: Green (Pass) vs Red (Fail)
-- Center percentage display
-- Shows actual counts below chart
+**Steps:**
+1. Create account at [netlify.com](https://netlify.com)
+2. Drag and drop project folder
+3. Or connect GitHub repository
+4. Site deployed instantly!
 
-#### Graph 3: Audit Ratio (Circular Progress)
-- Visual representation of audit done vs received
-- Donut chart with two segments
-- Color-coded: Blue (Audits Done) vs Orange (Audits Received)
-- Ratio calculation in center
+### 3. Vercel
 
-#### Graph 4: XP Distribution by Project (Bar Chart)
-- Top 8 projects by XP earned
-- Color-coded bars for visual distinction
-- Shows abbreviated project names
-- XP amount in thousands
+**Steps:**
+1. Create account at [vercel.com](https://vercel.com)
+2. Import GitHub project
+3. Click Deploy
+4. Your site is live!
 
-## 🛠️ Technology Stack
+### 4. GitLab Pages
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **GraphQL**: GraphQL queries with variables and nesting
-- **Authentication**: JWT Bearer tokens
-- **Visualization**: SVG-based charts (no external libraries)
-- **API**: GraphQL Engine from learn.reboot01.com
+**Steps:**
+1. Create GitLab repository
+2. Add all files
+3. Create `.gitlab-ci.yml`:
+   ```yaml
+   pages:
+     stage: deploy
+     script:
+       - mkdir .public
+       - cp -r * .public
+       - mv .public public
+     artifacts:
+       paths:
+         - public
+     only:
+       - main
+   ```
+4. Push to GitLab
+5. Site available at `https://YOUR_USERNAME.gitlab.io/graphql-profile/`
 
-## 📁 Project Structure
-
-```
-graphql/
-├── index.html           # Login page
-├── profile.html         # Main profile dashboard
-├── css/
-│   └── style.css        # All styling and responsive design
-├── js/
-│   ├── auth.js          # Authentication functions
-│   ├── graphql.js       # GraphQL request handler
-│   ├── graphs.js        # Graph drawing functions
-│   └── profile.js       # Profile data fetching and rendering
-└── README.md            # This file
-```
-
-## 🚀 Getting Started
+## Local Development
 
 ### Prerequisites
-- Web browser with JavaScript enabled
-- Internet connection
-- Valid credentials for learn.reboot01.com
+- Web browser (Chrome, Firefox, Safari, Edge)
+- Text editor
+- Basic knowledge of JavaScript and GraphQL
 
 ### Running Locally
 
-1. Clone or download the project
-2. Open `index.html` in a web browser
-3. Enter your username/email and password
-4. View your personalized dashboard with graphs
-
-### Deployment
-
-The project can be deployed to:
-- GitHub Pages
-- Netlify
-- Vercel
-- Any static hosting service
-
-## 📊 GraphQL Query Types Used
-
-✅ **Simple Query** - Basic field selection
-✅ **Query with Arguments** - Using WHERE clauses and filters
-✅ **Nested Query** - Related table relationships
-✅ **Query with Sorting/Limits** - order_by and limit parameters
-✅ **Multiple Queries** - Parallel data fetching
-
-## 🎨 Design Features
-
-- **Gradient Background** - Purple to violet gradient
-- **Cards Layout** - Clean, organized information sections
-- **Hover Effects** - Interactive feedback on elements
-- **Responsive** - Adapts to mobile, tablet, and desktop
-- **Color Coding** - Intuitive color scheme:
-  - Blue (#2196F3) - Primary actions, XP info
-  - Green (#4CAF50) - Success, Pass status
-  - Red (#f44336) - Danger, Fail status
-  - Orange (#FF9800) - Warning, Audit received
-
-## 🔒 Security Notes
-
-- JWT tokens are stored in localStorage
-- Tokens are sent via Bearer authentication
-- JWT payload can be inspected to extract user ID
-- Automatic logout on authentication errors
-- Clear error messages for debugging
-
-## 📝 Notes
-
-- All graphs are SVG-based for scalability and performance
-- No external charting libraries required
-- Data is fetched directly from GraphQL API
-- All timestamps are formatted in local timezone
-- Graceful error handling for missing data
-
-## 👨‍💻 Author
-
-Created as part of GraphQL learning project at Zone01/Reboot01
-
-## 📄 License
-
-Free to use and modify for educational purposes
-
-- Last 12 transactions displayed
-- Hover tooltips with XP amounts
-- Interactive and animated bars
-
-#### Graph 2: Pass/Fail Ratio (Donut Chart)
-- Circular progress graph showing success rate
-- Color-coded segments (Green for PASS, Red for FAIL)
-- Center percentage display
-- Summary statistics below
-
-#### Graph 3: Audit Ratio (Donut Chart)
-- Visual representation of audit completion ratio
-- Blue for audits done, Orange for audits received
-- Ratio display in center (e.g., 2.5:1)
-- Summary statistics
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Modern web browser with ES6 support
-- GraphQL API endpoint (configured with your domain)
-- Valid school credentials
-
-### Installation
-
-1. **Clone or download** the project files
-2. **Update the API endpoint** in `js/graphql.js`:
-   ```javascript
-   const API_URL = "https://your-domain.com/api/graphql-engine/v1/graphql";
+1. **Option 1: Simple HTTP Server**
+   ```bash
+   # Python 3
+   python -m http.server 8000
+   
+   # Node.js (if installed)
+   npx http-server
    ```
+   Then visit: `http://localhost:8000`
 
-3. **Update the signin endpoint** in `js/auth.js`:
-   ```javascript
-   fetch("https://your-domain.com/api/auth/signin", {
-   ```
+2. **Option 2: Visual Studio Code Live Server**
+   - Install "Live Server" extension
+   - Right-click `index.html` → "Open with Live Server"
 
-4. **Open `index.html`** in your browser or serve via HTTP server
+## API Endpoints
 
-### Usage
+- **GraphQL Endpoint:** `https://learn.reboot01.com/api/graphql-engine/v1/graphql`
+- **Authentication Endpoint:** `https://learn.reboot01.com/api/auth/signin`
 
-1. **Login** with your school credentials (username or email)
-2. **View Your Profile** with personal statistics
-3. **Explore Graphs** for visual insights into your progress
-4. **Logout** when finished
+## Data Displayed
 
-## 📁 Project Structure
+### User Information
+- User ID
+- Login (username)
+- Email (from attributes)
+- Current Level
+- Average Grade
 
-```
-graphql/
-├── index.html           # Login page
-├── profile.html         # Profile dashboard
-├── css/
-│   └── style.css       # Responsive styling
-└── js/
-    ├── auth.js         # Authentication logic (login/logout)
-    ├── graphql.js      # GraphQL query handler
-    ├── profile.js      # Profile data fetching
-    └── graphs.js       # SVG graph generation
-```
+### XP Statistics
+- Total XP (all transactions)
+- XP earned today
+- XP earned this week
+- Visual chart showing XP progression over time
 
-## 🔍 GraphQL Queries Implemented
+### Audit Statistics
+- Number of audits done
+- Number of audits received
+- Audit XP amounts
+- Audit ratio (done/received)
+- Pie chart visualization
 
-### 1. Simple Query - User Information
-```graphql
-{
-  user {
-    id
-    login
-  }
-}
-```
+### Project Statistics
+- Total projects
+- Projects passed
+- Projects failed
+- Projects in progress
+- Status breakdown chart
 
-### 2. Query with Arguments - XP Transactions
-```graphql
-{
-  transaction(where: { type: { _eq: "xp" }}) {
-    amount
-    createdAt
-    path
-  }
-}
-```
+### Skills
+- All skills with amounts
+- Color-coded by intensity
+- Sorted by XP amount
 
-### 3. Nested Query - Results with Object Details
-```graphql
-{
-  result(order_by: {createdAt: desc}, limit: 100) {
-    id
-    grade
-    path
-    createdAt
-    object {
-      name
-      type
-    }
-  }
-}
-```
+## Graphs Implemented
 
-### 4. Advanced Nested Query - User Audit Data
-```graphql
-{
-  user {
-    login
-    auditRatio
-    totalUp
-    totalDown
-  }
-}
-```
+1. **XP Over Time** - Line chart showing cumulative XP progression
+2. **Audit Ratio** - Pie chart showing done vs received audits
+3. **Project Status** - Donut chart with detailed breakdown
 
-## 🎨 Design Features
+## Browser Support
 
-### UI/UX Best Practices
-✅ **Responsive Design** - Works on desktop, tablet, and mobile
-✅ **Color Coding** - Clear visual hierarchy with color system
-✅ **Loading States** - User-friendly feedback during login
-✅ **Error Handling** - Clear, actionable error messages
-✅ **Accessibility** - Semantic HTML and keyboard navigation
-✅ **Performance** - Optimized SVG rendering
-✅ **Visual Feedback** - Hover effects and animations
+- Chrome/Chromium (Latest)
+- Firefox (Latest)
+- Safari (Latest)
+- Edge (Latest)
 
-### Color Scheme
-- Primary: Purple (#667eea)
-- Secondary: Dark Purple (#764ba2)
-- Success: Green (#4CAF50)
-- Danger: Red (#f44336)
-- Info: Blue (#2196F3)
-- Warning: Orange (#FF9800)
-
-## 🔧 Technical Stack
-
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with CSS Variables
-- **JavaScript (ES6+)** - Dynamic data handling
-- **SVG** - Scalable vector graphics for charts
-- **Fetch API** - HTTP requests
-- **GraphQL** - Query language for APIs
-- **JWT** - Token-based authentication
-
-## 📱 Browser Support
-
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
-
-## 🔐 Security Features
-
-- **JWT Token Storage** - Secure token management
-- **Authorization Headers** - Bearer token authentication
-- **CORS Support** - Cross-origin resource sharing
-- **Input Validation** - Form field validation
-- **Session Management** - Automatic redirect if token missing
-
-## 📊 Data Visualization
-
-All graphs are created using **SVG** with:
-- **Interactive tooltips** - Hover information
-- **Smooth animations** - Visual polish
-- **Responsive sizing** - Adapts to screen size
-- **Color gradients** - Professional appearance
-- **Clear legends** - Data interpretation
-
-## 🚀 Deployment
-
-### Hosting Options
-- **GitHub Pages** - Static site hosting
-- **Netlify** - Drag-and-drop deployment
-- **Vercel** - Optimized for static sites
-- **Firebase Hosting** - Fast and secure
-- **AWS S3** - Scalable cloud storage
-
-### Deployment Steps
-
-1. Build the project (no build step needed - it's pure HTML/CSS/JS)
-2. Upload files to your hosting service
-3. Configure environment variables (API endpoint)
-4. Enable HTTPS (required for secure API calls)
-5. Test authentication flow
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Login Issues
-- Verify credentials are correct
-- Check API endpoint configuration
-- Ensure CORS is enabled on server
-- Check browser console for errors
+- Ensure username/email and password are correct
+- Check for typos
+- Try clearing browser cache and cookies
 
-### Graph Display Issues
-- Verify GraphQL query returns data
-- Check SVG viewBox dimensions
-- Ensure localStorage contains JWT token
-- Clear browser cache if needed
+### No Data Displayed
+- Verify you're logged in
+- Check browser console for errors (F12)
+- Ensure this account has data in the system
+- Check if API is accessible
 
-### Missing Data
-- Confirm user has data in the system
-- Verify GraphQL query syntax
-- Check API response in Network tab
-- Review console for GraphQL errors
+### Charts Not Showing
+- Ensure D3.js loaded (check network tab)
+- Check console for errors
+- Try refreshing the page
+- Clear browser cache
 
-## 📚 Learning Resources
+## Technologies Used
 
-- [GraphQL Official Docs](https://graphql.org/)
-- [SVG Tutorial](https://developer.mozilla.org/en-US/docs/Web/SVG)
-- [JWT Explanation](https://jwt.io/introduction)
-- [Fetch API Guide](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Authentication:** JWT (JSON Web Tokens)
+- **API:** GraphQL
+- **Visualization:** D3.js v7
+- **HTTP:** Fetch API
 
-## 📝 Audit Checklist
+## Performance Tips
 
-### Functional Requirements
-- ✅ Login with valid/invalid credentials
-- ✅ Profile page with 3+ information sections
-- ✅ Statistical graphs section (minimum 2 different graphs)
-- ✅ Logout functionality
-- ✅ Profile hosted online
-- ✅ Data accuracy verified against GraphQL
+- Graphs are cached after first load
+- XP transactions limited to 1000 most recent by default
+- Skill deduplication removes redundant entries
+- Project deduplication shows only latest attempt per project
 
-### Technical Requirements
-- ✅ Simple GraphQL queries (normal)
-- ✅ Nested GraphQL queries
-- ✅ GraphQL queries with arguments
-- ✅ SVG-based graphs
-- ✅ JWT authentication
-- ✅ Responsive design
-- ✅ Error handling
+## Security Notes
 
-### Bonus Features
-- ✅ 4+ information sections
-- ✅ 3+ different graph types
-- ✅ Advanced UI/UX design
-- ✅ Additional statistics
+- Tokens stored in localStorage (suitable for public profile)
+- Never hardcode credentials
+- Always use HTTPS in production
+- Tokens are cleared on logout
+- CORS requests handled securely
 
-## 📧 Support
+## Features Roadmap
+
+- [ ] Dark mode toggle
+- [ ] Export statistics to CSV/PDF
+- [ ] Multiple theme options
+- [ ] Offline mode with cached data
+- [ ] Advanced filtering options
+- [ ] API rate limiting display
+- [ ] Custom date range for statistics
+
+## Contributing
+
+Feel free to improve this project! Consider adding:
+- Additional chart types
+- More statistics
+- UI/UX improvements
+- Performance optimizations
+- Bug fixes
+
+## License
+
+This project is part of the Reboot01 school curriculum.
+
+## Author
+
+Created as part of the GraphQL learning project at Reboot01.
+
+## Support
 
 For issues or questions:
 1. Check the troubleshooting section
-2. Review browser console for errors
-3. Verify API configuration
-4. Check network tab for API responses
-
-## 📄 License
-
-This project is created for educational purposes.
+2. Review the database schema (database-struct.txt)
+3. Check the GraphQL endpoint directly via GraphiQL
+4. Review browser console for specific errors
 
 ---
 
-**Created:** January 2026
-**Last Updated:** January 26, 2026
+**Happy learning! **
