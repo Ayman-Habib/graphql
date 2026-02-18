@@ -332,7 +332,9 @@ class GraphQLService {
                 transaction(
                     where: { 
                         userId: { _eq: $userId },
-                        type: { _eq: "level" }
+                        type: { _eq: "level" },
+                      	path: {_like: "/bahrain/bh-module%"}
+
                     },
                     order_by: { createdAt: desc },
                     limit: 1
