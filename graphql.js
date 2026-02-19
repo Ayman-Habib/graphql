@@ -330,16 +330,16 @@ class GraphQLService {
         const query = `
             query GetUserLevel($userId: Int!) {
                 transaction(
-                order_by: {amount: desc}
-                limit: 1
-                where: {
-                type: {_eq: "level"},
-                path: {_like: "/bahrain/bh-module%"}
-            }
-        ) {
-            amount
-        }
-    }
+                    where: { 
+                        userId: { _eq: $userId },
+                        type: { _eq: "level" }
+                    },
+                    order_by: { createdAt: desc },
+                    limit: 1
+                ) {
+                    amount
+                    createdAt
+                }
             }
         `;
         
