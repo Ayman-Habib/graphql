@@ -325,14 +325,15 @@ class GraphQLService {
         });
     }
 
-    // Get user level from transaction table
+    // Get user level from transaction table (excluding Piscine JS and Piscine Go)
     async getUserLevel() {
         const query = `
             query GetUserLevel($userId: Int!) {
                 transaction(
                     where: { 
                         userId: { _eq: $userId },
-                        type: { _eq: "level" }
+                        type: { _eq: "level" },
+                        path: { _nlike: "%/piscine-%" }
                     },
                     order_by: { createdAt: desc },
                     limit: 1
